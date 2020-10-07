@@ -48,17 +48,20 @@ function bonusCalc(employee) {
   for (let i = 0; i < employee.length; i++) {
     let name = employee[i].name;
     let bonus = ratingBonus(employee[i].reviewRating);
+    let salary = parseInt(employee[i].annualSalary);
+    let increase = salary * bonus;
+    let totalC = increase + salary;
+    let totalB = totalC - salary;
+
     if (bonus > 0) {
       bonus += timeBonus(employee[i].employeeNumber.length);
       bonus += tooMuch(employee[i].annualSalary);
     }
-    let salary = parseInt(employee[i].annualSalary);
+
     bonus = isAllowed(bonus);
-    let increase = salary * bonus;
-    let totalC = increase + salary;
-    let totalB = totalC - salary;
     totalC = Math.round(totalC);
     totalB = Math.round(totalB);
+
     payOut.push({
       name: name,
       bonusPercentage: bonus * 100,
