@@ -46,16 +46,60 @@ const payOut = [];
 
 function bonusCalc(employee) {
   for (let i = 0; i < employee.length; i++) {
-    console.log(employee);
-    if (employee[i].reviewRating < 3) {
-      payOut.push({
-        name: employee[i].name,
-        bonus: 0,
-        totalCompensation: employee[i].annualSalary,
-        totalBonus: 0,
-      });
+    let name = employee[i].name;
+    let bonus = ratingBonus(employee[i].reviewRating);
+    if (bonus > 0) {
+      bonus += timeBonus(employee[i].employeeNumber.length);
+      bonus += tooMuch(employee[i].annualSalary);
     }
+    let salary = parseInt(employee[i].annualSalary);
+    bonus = isAllowed(bonus);
+    let increase = salary * bonus;
+    let totalC = increase + salary;
+    let totalB = totalC - salary;
+    totalC = Math.round(totalC);
+    totalB = Math.round(totalB);
+    payOut.push({
+      name: name,
+      bonusPercentage: bonus * 100,
+      totalCompensation: totalC,
+      totalBonus: totalB,
+    });
   }
 }
-
+function timeBonus(idlength) {
+  if (idlength == 4) {
+    return 0.05;
+  }
+  return 0;
+}
+function isAllowed(bonus) {
+  if (bonus > 0.13) {
+    bonus = 0.13;
+  } else if (bonus < 0) {
+    bonus = 0;
+  }
+  return bonus;
+}
+function tooMuch(salary) {
+  if (salary > 65000) {
+    return -0.01;
+  }
+  return 0;
+}
+function ratingBonus(rating) {
+  switch (rating) {
+    case 1 || 2:
+      return 0;
+    case 3:
+      return 0.04;
+    case 4:
+      return 0.06;
+    case 5:
+      return 0.1;
+  }
+}
 console.log(bonusCalc(employees));
+console.log(payOut);
+
+console.log(employees);
